@@ -5,10 +5,10 @@ IS_X64=
 IS_X86=
 IS_ARM64=1
 CROSS_COMPILE=
-#use this code to reduce features
 MY_ARCH=-arch arm64 -march=armv8-a
-MY_ARCH=-arch arm64
+MY_ARCH+= -mmacosx-version-min=11.0
 USE_ASM=1
 export CC=$(CROSS_COMPILE)clang
 export CXX=$(CROSS_COMPILE)clang++
 USE_CLANG=1
+MACOS_MODE=1
