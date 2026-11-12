@@ -31,7 +31,7 @@ Excuse: to utilize git's 3-way merge, I have suggested https://github.com/jinfei
 Refer https://github.com/cielavenir/p7zip/blob/main/.github/workflows/ci.yaml for building manually.
 
 # 7zz with extension method
-This is the place for 7zz (Well known as 7zip-22.01 Linux version) to include major modern codecs such as Brotli, Fast LZMA2, LZ4, LZ5, Lizard and Zstd. In order to support multithreading for those addional codecs, this project depends on the [Multithreading Library](https://github.com/mcmilk/zstdmt).
+This is the place for 7zz (Well known as 7zip-26.06 Linux version) to include major modern codecs such as Brotli, Fast LZMA2, LZ4, LZ5, Lizard and Zstd. In order to support multithreading for those addional codecs, this project depends on the [Multithreading Library](https://github.com/mcmilk/zstdmt).
 
 ## Codec overview
 1. [Zstandard] v1.5.2 is a real-time compression algorithm, providing high compression ratios. It offers a very wide range of compression / speed trade-off, while being backed by a very fast decoder.
@@ -224,7 +224,8 @@ Hashers:
 
 ## Version Information
 
-- 7zz Version 22.01
+- 7zz Version 26.06
+  - Build note: `CPP/7zip/7zip_gcc.mak` uses `-std=gnu99` (not `c99`) because `C/Alloc.c` needs `posix_memalign` since 26.01.
   - [LZ4] Version 1.9.4
   - [Zstandard] Version 1.5.2
   - [Fast LZMA2] Version v1.0.1
