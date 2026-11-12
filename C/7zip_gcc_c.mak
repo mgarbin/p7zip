@@ -2,7 +2,7 @@
 MY_ARCH_2 = $(MY_ARCH)
 
 MY_ASM = jwasm
-MY_ASM = asmc
+MY_ASM = uasm
 
 ifndef RC
 #RC=windres.exe --target=pe-x86-64
@@ -119,22 +119,44 @@ MY_MKDIR=mkdir -p
 
 # LOCAL_LIBS=-lpthread
 # LOCAL_LIBS_DLL=$(LOCAL_LIBS) -ldl
-LIB2 = -lpthread -ldl
+LIB2 = -pthread -ldl
 
 DEL_OBJ_EXE = -$(RM) $(PROGPATH) $(PROGPATH_STATIC) $(OBJS)
 
 endif
 
 
-ifdef IS_X64
-AFLAGS_ABI = -elf64 -DABI_LINUX
+# gnu99 for utimensat
+CFLAGS = $(LOCAL_FLAGS) $(CFLAGS_BASE2) $(CFLAGS_BASE) -std=gnu99 $(CC_SHARED) -o $@
+
+
+ifdef IS_MINGW
+  ifdef IS_X64
+    AFLAGS_ABI = -win64
+  else
+    AFLAGS_ABI = -coff -DABI_CDECL
+  endif
+  AFLAGS = -nologo $(AFLAGS_ABI) -Fo$(O)/$(basename $(<F)).o
 else
-AFLAGS_ABI = -elf -DABI_LINUX -DABI_CDECL
-# -DABI_CDECL
-# -DABI_LINUX
-# -DABI_CDECL
+  ifdef IS_MAC
+    ifdef IS_X64
+      AFLAGS_ABI = -macho64 -DABI_MAC
+    else
+      AFLGGS_ABI = -UNSUPPORTED_CONFIGURATION
+    endif
+  else
+    LD_arch += -Wl,--no-undefined -Wl,-z,noexecstack
+    ifdef IS_X64
+      AFLAGS_ABI = -elf64 -DABI_LINUX
+    else
+      AFLAGS_ABI = -elf -DABI_LINUX -DABI_CDECL
+      # -DABI_CDECL
+      # -DABI_LINUX
+      # -DABI_CDECL
+    endif
+  endif
+  AFLAGS = -nologo $(AFLAGS_ABI) -Fo$(O)/
 endif
-AFLAGS = $(AFLAGS_ABI) -Fo$(O)/
 
 C_WARN_FLAGS =
 
@@ -147,6 +169,8 @@ endif
 
 
 all: $(O) $(PROGPATH) $(STATIC_TARGET)
+.PHONY: mkdir
+mkdir: $(O)
 
 $(O):
 	$(MY_MKDIR) $(O)
